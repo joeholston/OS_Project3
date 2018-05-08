@@ -20,7 +20,7 @@
 
 
 int main(){
-  struct rusage r_usage;
+  struct rusage r_usage;  //initializes the struct that we get the allocation info from
   
   //sets aside 1 gig of ram for the program
   int* p = malloc(1000000000);

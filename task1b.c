@@ -17,8 +17,8 @@
 
 int main()
 {
-  struct rusage r_usage;
-  int a, b, c;
+  struct rusage r_usage;    //initializes the struct that we get the allocation info from
+  int a, b, c;            //initializes ints for addition
   
   //adds two numbers
   a = 12;

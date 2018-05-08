@@ -28,7 +28,7 @@ void *runner2(); /* the thread */
 
 int main(int argc, char *argv[])
 {
-  struct rusage r_usage;
+  struct rusage r_usage;    //initializes the struct that we get the allocation info from
  
   pthread_mutex_init(&mutexsum, NULL);   //initialize pthread
 
