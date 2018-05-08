@@ -1,12 +1,51 @@
-#include <sys/sysinfo.h>
+#include <pthread.h>
 #include <stdio.h>
+#include <syscall.h>
+#include <unistd.h>
 #include <stdlib.h>
 #include <string.h>
-#include <unistd.h>
 #include <sys/resource.h>
+#include <sys/sysinfo.h>
 
 #define THRESHOLD 85
 int overThreshold = 0;
+
+void *memoryManager();
+void *test1();
+void *test2();
+void *test3();
+void memCheck();
+
+int main(int argc, char *argv[])
+{
+  pthread_t tid1;
+  pthread_attr_t attr;
+
+  pthread_attr_init(&attr);
+
+  pthread_create(&tid1,&attr,memoryManager,NULL);
+
+  pthread_join(tid1,NULL);
+}
+
+void *memoryManager()
+{
+  memCheck();
+
+  pthread_t tid2, tid3, tid4;
+  pthread_attr_t attr;
+
+  pthread_attr_init(&attr);
+
+  pthread_create(&tid2,&attr,test1,NULL);
+  pthread_create(&tid3,&attr,test2,NULL);
+  pthread_create(&tid4,&attr,test3,NULL);
+
+  pthread_join(tid2,NULL);
+  pthread_join(tid3,NULL);
+  pthread_join(tid4,NULL);
+  pthread_exit(0);
+}
 
 void memCheck()
 {
@@ -29,48 +68,31 @@ void memCheck()
         overThreshold = 0;
       }
     }
-    printf("%f%%\n",percentUsed);
+    printf("Current Memory Usage: %f%%\n",percentUsed);
 }
 
-void test1(){
-  char store[10];
-
-  struct rusage r_usage;
-
+void *test1(){
+  memCheck();
   int* p = malloc(2000000000);
   memset(p, 0, 2000000000);
+  memCheck();
+  pthread_exit(0);
 }
 
-void test2(){
-  char store[10];
-
-  struct rusage r_usage;
-
-  int* p = malloc(1000000000);
-  memset(p, 0, 1000000000);
+void *test2(){
+  memCheck();
+  int* p = malloc(1500000000);
+  memset(p, 0, 1500000000);
   memCheck();
   free(p);
   memCheck();
+  pthread_exit(0);
 }
 
-void test3(){
-  char store[10];
-
-  struct rusage r_usage;
-
+void *test3(){
+  memCheck();
   int* p = malloc(1000000000);
   memset(p, 0, 1000000000);
-}
-
-int main(int argc, char *argv[]){
-
   memCheck();
-  test1();
-  memCheck();
-  test2();
-  test3();
-  memCheck();
-  test3();
-  memCheck();
-  return 0;
+  pthread_exit(0);
 }
