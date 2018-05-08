@@ -1,3 +1,11 @@
+/*
+AUTHORS: JOE HOLSTON, DAN SMITH
+COURSE: COMP 340- OS
+DUE DATE: MAY 8, 2018
+DESCRIPTION: RUNS PROCESSES AND SEND A ERROR MESSAGE WHEN RAM USAGE IS ABOVE DESIRED THRESHOLD
+TO RUN/COMPILE: gcc -o task3 task3.c -lpthread
+*/
+
 #include <pthread.h>
 #include <stdio.h>
 #include <syscall.h>
@@ -7,9 +15,11 @@
 #include <sys/resource.h>
 #include <sys/sysinfo.h>
 
+//maximum percentage of RAM usage desired
 #define THRESHOLD 85
 int overThreshold = 0;
 
+//thread runner functions
 void *memoryManager();
 void *test1();
 void *test2();
@@ -18,6 +28,7 @@ void memCheck();
 
 int main(int argc, char *argv[])
 {
+  //creates and runs the parent thread for memory managment
   pthread_t tid1;
   pthread_attr_t attr;
 
@@ -28,6 +39,7 @@ int main(int argc, char *argv[])
   pthread_join(tid1,NULL);
 }
 
+//parent function that creates the various child processes to run each of the tests
 void *memoryManager()
 {
   memCheck();
@@ -47,12 +59,15 @@ void *memoryManager()
   pthread_exit(0);
 }
 
+//used to check the current state of the memory usage
 void memCheck()
 {
     double percentUsed;
     struct sysinfo info;
+    //fills a premade struct of type sysinfo and is provided through sys/sysinfo.h
     sysinfo (&info);
 
+    //calculated through values that are provided by calling sysinfo. Uses the total ram and free ram to calculate amount of ram being used.
     percentUsed = ((double)(info.totalram - info.freeram) / (double)info.totalram)*100;
 
     //not already over 85
@@ -71,6 +86,7 @@ void memCheck()
     printf("Current Memory Usage: %f%%\n",percentUsed);
 }
 
+//simple test that allocates 2GB
 void *test1(){
   memCheck();
   int* p = malloc(2000000000);
@@ -79,6 +95,7 @@ void *test1(){
   pthread_exit(0);
 }
 
+//test that allocates and then clears out 1.5GB
 void *test2(){
   memCheck();
   int* p = malloc(1500000000);
@@ -89,6 +106,7 @@ void *test2(){
   pthread_exit(0);
 }
 
+//allocates 1GB
 void *test3(){
   memCheck();
   int* p = malloc(1000000000);

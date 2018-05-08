@@ -1,3 +1,12 @@
+/*
+AUTHORS: JOE HOLSTON, DAN SMITH
+COURSE: COMP 340- OS
+DUE DATE: MAY 8, 2018
+DESCRIPTION: RUNS PROCESSES AND SEND A ERROR MESSAGE WHEN RAM USAGE IS ABOVE DESIRED THRESHOLD.
+              PROCESSES WILL BE KILLED TO GO UNDER THRESHOLD.
+TO RUN/COMPILE: gcc -o task4 task4.c -lpthread
+*/
+
 #include <pthread.h>
 #include <stdio.h>
 #include <syscall.h>
@@ -50,6 +59,7 @@ void *memoryManager()
 
 }
 
+//used the same as in task 3. See comments there to provide full explanation.
 void memCheck()
 {
     double percentUsed;
@@ -63,6 +73,8 @@ void memCheck()
       if(percentUsed >= THRESHOLD){
         printf("WARNING: System Memory Usage has exceeded %d%%\n", THRESHOLD);
         overThreshold = 1;
+
+        //detects if the usage is over 85% and begins to kill processes to lower under threshold
         percentUsed = ((double)(info.totalram - info.freeram) / (double)info.totalram)*100;
         printf("Memory Before: %f%%\n",percentUsed);
         printf("Killing thread.\n");
@@ -75,6 +87,7 @@ void memCheck()
         overThreshold = 0;
       }
       else{
+        //detects if the usage is over 85% and begins to kill processes to lower under threshold
         printf("Killing thread.\n");
         pthread_exit(0);
       }
@@ -84,6 +97,7 @@ void memCheck()
 
 }
 
+//test that allocates 2GB
 void *test1(){
   int i;
   memCheck();
@@ -93,6 +107,7 @@ void *test1(){
   pthread_exit(0);
 }
 
+//test that allocates 1.5GB
 void *test2(){
   memCheck();
   int* p = malloc(1500000000);
@@ -101,6 +116,7 @@ void *test2(){
   pthread_exit(0);
 }
 
+//test that allocates 1GB
 void *test3(){
   memCheck();
   int* p = malloc(1000000000);
