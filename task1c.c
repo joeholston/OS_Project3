@@ -1,4 +1,14 @@
-/* to compile this code pass -lpthread to gcc */
+/*
+  Authors:  Joe Holston and Dan Smith
+  Course:  COMP 340, Operating Systems
+  Date:    7 May 2018
+  Description:   This file implements the
+                 functionality required for
+                 Program 3, Task 1.
+  Compile with:  gcc -o task1c task1c.c -lpthread 
+  Run with:      ./task1c
+*/
+
 #include <pthread.h>
 #include <stdio.h>
 #include <syscall.h>
@@ -7,6 +17,8 @@
 #include <semaphore.h>
 #include <sys/resource.h>
 
+
+//THREAD AND SEMAPHORE EXAMPLE
 
 int sum; /* this data is shared by the thread(s) */
  pthread_mutex_t mutexsum;  //from power point week6
@@ -18,7 +30,7 @@ int main(int argc, char *argv[])
 {
   struct rusage r_usage;
  
-  pthread_mutex_init(&mutexsum, NULL);   //power point week6
+  pthread_mutex_init(&mutexsum, NULL);   //initialize pthread
 
 
   pthread_t tid1, tid2; /* the thread identifiers */
@@ -41,6 +53,8 @@ int main(int argc, char *argv[])
 
   printf("sum = %d\n",sum);
   pthread_mutex_destroy(&mutexsum);
+  
+  //prints out memory allocated
   getrusage(RUSAGE_SELF,&r_usage);
   printf("Memory usage = %ld kB\n",r_usage.ru_maxrss);
 }
