@@ -1,3 +1,14 @@
+/*
+  Authors:  Joe Holston and Dan Smith
+  Course:  COMP 340, Operating Systems
+  Date:    7 May 2018
+  Description:   This file implements the
+                 functionality required for
+                 Program 3, Task 1.
+  Compile with:  gcc -o task2b task2b.c 
+  Run with:      ./task2b
+*/
+
 #include <sys/sysinfo.h>
 #include <stdio.h>
 #include <unistd.h>
